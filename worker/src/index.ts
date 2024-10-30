@@ -1,12 +1,15 @@
-import express from "express";
-import cors from "cors";
+import { buildJobWorker } from "./job-queue";
 
-const app = express();
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
+async function main() {
+  buildJobWorker.on("completed", (job) => {
+    console.log(`Build job ${job.id} completed successfully`);
+  });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  buildJobWorker.on("failed", (job, err) => {
+    console.error(`Build job ${job?.id} failed with error: ${err.message}`);
+  });
+
+  console.log("Worker is running...");
+}
+
+main();
