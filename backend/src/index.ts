@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import addBuildJob from "./job-queue";
+import { getAllUsers } from "./models/User";
 
 const app = express();
 app.use(cors());
@@ -25,7 +26,10 @@ app.post("/build", async (req, res) => {
   res.json({ message: "Build job added successfully" });
 });
 
+getAllUsers().then((users) => { console.log(users) });
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
