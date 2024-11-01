@@ -7,14 +7,16 @@ const blobService = new BlobServiceClient(`https://${AZURE_STORAGE_ACCOUNT_NAME}
 async function createContainer(containerName: string) {
     const containerClient = blobService.getContainerClient(containerName)
     
-    const createContainerResponse = await containerClient.create()
+    const createContainerResponse = await containerClient.create({
+        access: "container"
+    })
 
     console.log(`Create container ${containerName} successfully`, createContainerResponse.requestId)
 }
 
 async function doesContainerExist(containerName: string) {
     const containerClient = blobService.getContainerClient(containerName)
-
+    
     return await containerClient.exists()
 }
 
