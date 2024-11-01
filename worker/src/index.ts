@@ -1,4 +1,4 @@
-import { buildJobWorker } from "./job-queue";
+import { buildJobWorker } from "./queues";
 
 async function main() {
   buildJobWorker.on("completed", (job) => {

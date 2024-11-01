@@ -1,21 +1,20 @@
 import { Build, Project, User } from "@prisma/client";
 import { prisma } from "../prisma";
-import { ProjectConfig } from "../../../shared-code/project";
+import { ProjectConfig, ProjectCreateDTO } from "../../../shared-code/project";
 
-export async function getProjectById(id: number): Promise<Project | null> {
+export async function getProjectById(id: number) {
     return await prisma.project.findUnique({
         where: {
             id
+        },
+        include: {
+            config_env_vars: true
         }
     })
 }
 
-interface ProjectData {
-    owner: User,
-    name: string,
-    token: string,
-    repository_url: string,
-    config: ProjectConfig
+interface ProjectData extends ProjectCreateDTO {
+    ownerId: number
 }
     
 
@@ -31,17 +30,14 @@ export async function createProject(projectData: ProjectData): Promise<Project> 
             config_root_dir: projectData.config.rootDir,
             config_env_vars: {
                 createMany: {
-                    data: Object.entries(projectData.config.environment).map(([key, value]) => ({
+                    data: Object.entries(projectData.config.environment ?? []).map(([key, value]) => ({
                         key,
                         value
                     }))
                 }
             },
-            owner: {
-                connect: {
-                    id: projectData.owner.id
-                }
-            },
+            ownerId: projectData.ownerId,
+            container_name: `${Date.now()}-${projectData.name}`
         }
     })
 }

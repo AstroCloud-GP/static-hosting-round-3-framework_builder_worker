@@ -5,10 +5,13 @@ export async function getAllUsers(): Promise<User[]> {
     return await prisma.user.findMany()
 }
 
-export function getUserById(id: number): Promise<User | null> {
+export function getUserById(id: number) {
     return prisma.user.findUnique({
         where: {
             id
+        },
+        include: {
+            projects: true
         }
     })
 }

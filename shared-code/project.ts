@@ -1,10 +1,17 @@
 
 export interface ProjectConfig {
-    branch: string,
-    buildCommand: string,
-    rootDir: string,
-    outputDir: string,
-    environment: {
+    branch?: string | null,
+    buildCommand?: string | null,
+    rootDir?: string | null,
+    outputDir?: string | null,
+    environment?: {
         [key: string]: string
-    }
+    } | null
+}
+
+export interface ProjectCreateDTO {
+    name: string,
+    token: string,
+    repository_url: string,
+    config: ProjectConfig
 }
