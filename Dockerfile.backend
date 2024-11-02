@@ -25,6 +25,8 @@ RUN npm install --omit=dev
 
 COPY ./backend/prisma ./prisma
 
+COPY ./backend/public ./public
+
 RUN npx prisma generate
 
 COPY --from=base /app/backend/build /app/backend/build
