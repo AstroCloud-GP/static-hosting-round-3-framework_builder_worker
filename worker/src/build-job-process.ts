@@ -45,15 +45,17 @@ async function buildJob(data: BuildJob): Promise<{
         console.log("Git clone logs: ", logs);
         cumLogs += logs;
 
-        logs = execSync(`docker exec ${data.container_name} sh -c "cd /app && npm install --force"`).toString();
-        console.log("Npm install logs: ", logs);
-        cumLogs += logs;
+        if(data.project_config.buildCommand) {
+            logs = execSync(`docker exec ${data.container_name} sh -c "cd /app && npm install --force"`).toString();
+            console.log("Npm install logs: ", logs);
+            cumLogs += logs;
+        }
 
         logs = execSync(`docker exec ${data.container_name} sh -c "cd /app/${data.project_config.rootDir || ''} && ${data.project_config.buildCommand || 'echo "No build command specified"'}"`).toString();
         console.log("Build command logs: ", logs);
         cumLogs += logs;
 
-        logs = execSync(`docker exec ${data.container_name} cp -r ./${data.project_config.outputDir || ''} /output`).toString();
+        logs = execSync(`docker exec ${data.container_name} cp -r ./${data.project_config.outputDir + '/' || ''} /output`).toString();
         console.log("Copy output logs: ", logs);
         cumLogs += logs;
 
@@ -91,14 +93,18 @@ async function buildJob(data: BuildJob): Promise<{
             logs: cumLogs
         }
     } catch (e) {
-        console.error(e)
+        console.error("Error occurred in building process: ", e)
         return {
             status: "FAIL",
             logs: cumLogs + e,
         }
     } finally {
         // cleanup container
-        execSync(`docker stop ${data.container_name}`);
+        try {
+            execSync(`docker stop ${data.container_name}`);
+        } catch (e) {
+            console.error("Error occurred in stopping container: ", e)
+        }           
 
         // cleanup working directory
         fs.rmdirSync(workFolder, { recursive: true });

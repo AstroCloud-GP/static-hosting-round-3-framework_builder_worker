@@ -1,0 +1,8 @@
+# Nested dockerignore files are not supported, so we need to list all the files and directories we want to ignore here.
+
+**/node_modules
+**/.env
+**/temp
+**/build
+**/dist
+**/coverage

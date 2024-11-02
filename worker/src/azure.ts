@@ -1,6 +1,7 @@
 import { DefaultAzureCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { AZURE_STORAGE_ACCOUNT_NAME } from "./config";
+import mime from "mime-types";
 
 const blobService = new BlobServiceClient(`https://${AZURE_STORAGE_ACCOUNT_NAME}.blob.core.windows.net`, new DefaultAzureCredential())
 
@@ -24,7 +25,12 @@ async function uploadToContainer(containerName: string, blobName: string, file: 
     const containerClient = blobService.getContainerClient(containerName)
     const blockBlobClient = containerClient.getBlockBlobClient(blobName)
 
-    const uploadBlobResponse = await blockBlobClient.upload(file, file.length)
+    const mimeType = mime.lookup(blobName) || "application/octet-stream"; // Default if MIME type is not found
+    const uploadBlobResponse = await blockBlobClient.upload(file, file.length, {
+        blobHTTPHeaders: {
+            blobContentType: mimeType,
+        },
+    })
 
     console.log(`Upload block blob ${blobName} successfully`, uploadBlobResponse.requestId)
 }

@@ -1,3 +1,5 @@
+import { config } from "dotenv";
+process.env.DOCKER? config({path: '/run/secrets/secrets_file'}) : config();
 
 export const redisConfig = {
     host: process.env.REDIS_HOST || "localhost",

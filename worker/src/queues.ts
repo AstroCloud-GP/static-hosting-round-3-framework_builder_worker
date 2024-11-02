@@ -5,4 +5,10 @@ import { buildJobProcessor } from "./build-job-process";
 
 export const buildResultQueue = new Queue<BuildResult>(BUILD_RESULT_QUEUE_NAME, { connection: redisConfig })
 
-export const buildJobWorker = new Worker<BuildJob>(BUILD_JOB_QUEUE_NAME, buildJobProcessor, { connection: redisConfig })
+export const buildJobWorker = new Worker<BuildJob>(BUILD_JOB_QUEUE_NAME, buildJobProcessor, {
+    connection: redisConfig,
+    removeOnFail: {
+        count: 0
+    },
+    maxStalledCount: 0
+})

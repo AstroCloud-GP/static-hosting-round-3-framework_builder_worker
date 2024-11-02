@@ -1,0 +1,38 @@
+FROM docker:dind AS base
+
+# Install Node.js and npm
+RUN apk add --no-cache \
+    nodejs \
+    npm
+
+ENV DOCKER=true
+
+# ---
+
+FROM base AS builder 
+
+WORKDIR /app/worker
+
+COPY ./worker/package*.json /app/worker
+
+RUN npm install --force
+
+COPY ./worker /app/worker
+
+COPY ./shared-code /app/shared-code
+
+RUN npm run build
+
+# ---
+
+FROM base AS production
+
+WORKDIR /app/worker
+
+COPY ./worker/package*.json /app/worker
+
+RUN npm install --omit=dev
+
+COPY --from=builder /app/worker/build /app/worker/build
+
+CMD ["npm", "start"]

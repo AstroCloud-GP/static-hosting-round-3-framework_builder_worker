@@ -1,0 +1,74 @@
+services:
+  backend:
+    image: poc3/backend:prod
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: poc3-backend
+    environment:
+      - REDIS_HOST=queue
+      - REDIS_PORT=6379
+      - DATABASE_URL=postgres://user:password@database/mydb
+    entrypoint: sh -c 'npx prisma db push && npm run start'
+    ports:
+      - "3000:3000"
+    networks:
+      - private
+      - public
+    depends_on:
+      - database
+      - queue
+
+  worker:
+    image: poc3/worker:prod
+    build:
+      context: .
+      dockerfile: Dockerfile.worker
+    container_name: poc3-worker
+    entrypoint: sh -c 'dockerd & npm run start'
+    environment:
+      - REDIS_HOST=queue
+      - REDIS_PORT=6379
+      - AZURE_STORAGE_ACCOUNT_NAME=atwaa
+    secrets:
+      - secrets_file
+    networks:
+      - private
+    depends_on:
+      - queue
+    privileged: true
+
+  database:
+    extends:
+      file: docker-compose-database.yml
+      service: postgres
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    networks:
+      - private
+
+  queue:
+    extends:
+      file: docker-compose-queue.yml
+      service: redis
+    networks:
+      - private
+  
+  web:
+    extends:
+      file: web-server/compose.yml
+      service: nginx
+    networks:
+      - public
+
+secrets:
+  secrets_file:
+    file: ./.env
+
+networks:
+  private:
+  public:
+      
+volumes:
+  database-data:
+
