@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker
+        image: poc3/worker:prod
+        command: ["/bin/sh"]
+        args: ["-c", "dockerd & npm run start"]
+        env:
+          - name: REDIS_HOST
+            value: queue
+          - name: REDIS_PORT
+            value: "6379"
+          - name: AZURE_STORAGE_ACCOUNT_NAME
+            value: atwaa
+        envFrom:
+          - secretRef:
+              name: worker-secret
+        securityContext:
+          privileged: true
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        

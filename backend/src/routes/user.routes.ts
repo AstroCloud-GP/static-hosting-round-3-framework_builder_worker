@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getUserById } from '../models/User';
+import { createUser, getUserById } from '../models/User';
 
 const userRouter = Router();
 
@@ -18,6 +18,10 @@ userRouter.get('/:id', async (req, res) => {
   }
 });
 
+userRouter.post('/', async (req, res) => {
+  await createUser("atwa", "email")
+  res.json({ message: 'User created' });
+});
 
 
 export default userRouter;

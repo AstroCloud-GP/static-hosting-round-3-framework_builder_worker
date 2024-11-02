@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: poc3/backend:prod
+        command: ["/bin/sh"]
+        args: ["-c", "npx prisma db push && npm run start"]
+        env:
+        - name: DATABASE_URL
+          value: postgres://user:password@database:5432/mydb
+        - name: REDIS_HOST
+          value: queue
+        - name: REDIS_PORT
+          value: "6379"
+        ports:
+        - containerPort: 3000
