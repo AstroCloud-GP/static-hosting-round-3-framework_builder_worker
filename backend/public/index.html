@@ -1,9 +1,199 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>File Upload</title>
+  <title>Home Page</title>
+  <link rel="stylesheet" type="text/css" href="styles.css">
+  <script>
+    async function createUser(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const response = await fetch('/user', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ name, email })
+      });
+      const result = await response.json();
+      alert(result.message);
+    }
+
+    async function signIn(event) {
+      event.preventDefault();
+      const userId = document.getElementById('userId').value;
+      const response = await fetch(`/user/${userId}`);
+      const user = await response.json();
+      if (user.message) {
+        alert(user.message);
+      } else {
+        displayProjects(user.projects);
+      }
+    }
+
+    function displayProjects(projects) {
+      const projectsContainer = document.getElementById('userProjects');
+      projectsContainer.innerHTML = '';
+      projects.forEach(project => {
+        const projectElement = document.createElement('div');
+        projectElement.className = 'project';
+        const deploymentUrl = `${project.container_name}.lvh.me`;
+        projectElement.innerHTML = `
+          <h3>${project.name}</h3>
+          <p><strong>Project ID:</strong> ${project.id}</p>
+          <p><strong>Repository URL:</strong> ${project.repository_url}</p>
+          <p><strong>Branch:</strong> ${project.config_branch}</p>
+          <p><strong>Build Command:</strong> ${project.config_build_command || ''}</p>
+          <p><strong>Output Directory:</strong> ${project.config_out_dir || ''}</p>
+          <p><strong>Root Directory:</strong> ${project.config_root_dir || ''}</p>
+          <p><strong>Deployment URL:</strong> <a href="http://${deploymentUrl}" target="_blank">${deploymentUrl}</a></p>
+        `;
+        projectsContainer.appendChild(projectElement);
+      });
+    }
+
+    async function getProjectBuilds(event) {
+      event.preventDefault();
+      const projectId = document.getElementById('projectId').value;
+      const response = await fetch(`/project/${projectId}/builds`);
+      const builds = await response.json();
+      displayBuilds(builds);
+    }
+
+    function displayBuilds(builds) {
+      const buildsContainer = document.getElementById('projectBuilds');
+      buildsContainer.innerHTML = '';
+      builds.forEach(build => {
+        const buildElement = document.createElement('div');
+        buildElement.className = 'build';
+        buildElement.innerHTML = `
+          <h4>Build #${build.build_number}</h4>
+          <p><strong>Status:</strong> ${build.build_status}</p>
+          <p><strong>Logs:</strong> <button onclick="toggleLogs(${build.build_number})">Show Logs</button></p>
+          <pre id="logs-${build.build_number}" class="logs" style="display: none;">${build.logs}</pre>
+          <button onclick="rebuildProject(${build.project_id})">Rebuild</button>
+        `;
+        buildsContainer.appendChild(buildElement);
+      });
+    }
+
+    function toggleLogs(buildNumber) {
+      const logsElement = document.getElementById(`logs-${buildNumber}`);
+      if (logsElement.style.display === 'none') {
+        logsElement.style.display = 'block';
+      } else {
+        logsElement.style.display = 'none';
+      }
+    }
+
+    async function rebuildProject(projectId) {
+      const response = await fetch(`/project/${projectId}/build`, {
+        method: 'POST'
+      });
+      const result = await response.json();
+      alert(result.message);
+    }
+
+    async function createProject(event) {
+      event.preventDefault();
+      const name = document.getElementById('projectName').value;
+      const token = document.getElementById('projectToken').value;
+      const repositoryUrl = document.getElementById('repositoryUrl').value;
+      const branch = document.getElementById('branch').value;
+      const buildCommand = document.getElementById('buildCommand').value || '';
+      const outputDir = document.getElementById('outputDir').value || '';
+      const rootDir = document.getElementById('rootDir').value || '';
+      const environment = document.getElementById('environment').value || '';
+
+      const config = { branch };
+      if (buildCommand) config.buildCommand = buildCommand;
+      if (outputDir) config.outputDir = outputDir;
+      if (rootDir) config.rootDir = rootDir;
+      if (environment) config.environment = JSON.parse(environment);
+
+      const response = await fetch('/project/new', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name,
+          token,
+          repository_url: repositoryUrl,
+          config
+        })
+      });
+      const result = await response.json();
+      alert(`${result.message} Project ID: ${result.projectId}`);
+    }
+  </script>
 </head>
 <body>
-  <h1>File Upload</h1>
+  <h1>Home Page</h1>
+  <section>
+    <h2>Create User</h2>
+    <form onsubmit="createUser(event)">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <br>
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      <br>
+      <button type="submit">Create User</button>
+    </form>
+  </section>
+  <section>
+    <h2>Sign In</h2>
+    <form onsubmit="signIn(event)">
+      <label for="userId">User ID:</label>
+      <input type="number" id="userId" name="userId" required>
+      <br>
+      <button type="submit">Sign In</button>
+    </form>
+  </section>
+  <section>
+    <h2>User Projects</h2>
+    <div id="userProjects"></div>
+  </section>
+  <section>
+    <h2>Project Builds</h2>
+    <form onsubmit="getProjectBuilds(event)">
+      <label for="projectId">Project ID:</label>
+      <input type="number" id="projectId" name="projectId" required>
+      <br>
+      <button type="submit">Get Builds</button>
+    </form>
+    <div id="projectBuilds"></div>
+  </section>
+  <section>
+    <h2>Create Project</h2>
+    <form onsubmit="createProject(event)">
+      <label for="projectName">Project Name:</label>
+      <input type="text" id="projectName" name="projectName" required>
+      <br>
+      <label for="projectToken">GitHub Token:</label>
+      <input type="text" id="projectToken" name="projectToken" required>
+      <br>
+      <label for="repositoryUrl">Repository URL:</label>
+      <input type="url" id="repositoryUrl" name="repositoryUrl" required>
+      <br>
+      <label for="branch">Branch:</label>
+      <input type="text" id="branch" name="branch" required>
+      <br>
+      <label for="buildCommand">Build Command:</label>
+      <input type="text" id="buildCommand" name="buildCommand">
+      <br>
+      <label for="outputDir">Output Directory:</label>
+      <input type="text" id="outputDir" name="outputDir">
+      <br>
+      <label for="rootDir">Root Directory:</label>
+      <input type="text" id="rootDir" name="rootDir">
+      <br>
+      <label for="environment">Environment Variables (JSON):</label>
+      <textarea id="environment" name="environment"></textarea>
+      <br>
+      <button type="submit">Create Project</button>
+    </form>
+  </section>
 </body>
 </html>

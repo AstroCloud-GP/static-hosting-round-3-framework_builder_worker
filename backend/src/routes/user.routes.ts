@@ -19,9 +19,9 @@ userRouter.get('/:id', async (req, res) => {
 });
 
 userRouter.post('/', async (req, res) => {
-  await createUser("atwa", "email")
+  const { name, email } = req.body;
+  await createUser(name, email);
   res.json({ message: 'User created' });
 });
-
 
 export default userRouter;

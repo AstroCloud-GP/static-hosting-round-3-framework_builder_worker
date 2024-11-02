@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ProjectCreateDTO } from '../../../shared-code/project';
-import { createProject, getProjectById } from '../models/Project';
+import { createProject, getProjectById, getProjectBuilds } from '../models/Project';
 import { createBuild } from '../models/Build';
 import addBuildJob from '../job-queue';
 
@@ -31,7 +31,8 @@ projectRouter.post('/new', async (req, res) => {
     })
 
     res.json({
-        message: "Project created successfully. Build job added to queue."
+        message: "Project created successfully. Build job added to queue.",
+        projectId: project.id
     })
 
 });
@@ -72,6 +73,17 @@ projectRouter.post('/:id/build', async (req, res) => {
     res.json({
         message: "Build job added to queue."
     })
+});
+
+// Get builds for a project by project id
+projectRouter.get('/:id/builds', async (req, res) => {
+    const id = parseInt(req.params.id);
+    const builds = await getProjectBuilds(id);
+    if (builds) {
+        res.json(builds);
+    } else {
+        res.status(404).json({ message: 'Builds not found' });
+    }
 });
 
 export default projectRouter;

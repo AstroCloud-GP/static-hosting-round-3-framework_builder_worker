@@ -55,7 +55,7 @@ async function buildJob(data: BuildJob): Promise<{
         console.log("Build command logs: ", logs);
         cumLogs += logs;
 
-        logs = execSync(`docker exec ${data.container_name} cp -r ./${data.project_config.outputDir + '/' || ''} /output`).toString();
+        logs = execSync(`docker exec ${data.container_name} cp -r ./${data.project_config.outputDir? data.project_config.outputDir + '/' : ''} /output`).toString();
         console.log("Copy output logs: ", logs);
         cumLogs += logs;
 
