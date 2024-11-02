@@ -24,7 +24,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.worker
-    container_name: poc3-worker
     entrypoint: sh -c 'dockerd & npm run start'
     environment:
       - REDIS_HOST=queue
@@ -37,6 +36,8 @@ services:
     depends_on:
       - queue
     privileged: true
+    deploy:
+      replicas: 3
 
   database:
     extends:
