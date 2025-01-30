@@ -12,10 +12,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const staticPath = path.join(process.cwd(), "public");
-console.log("staticPath", staticPath);
-app.use(express.static(staticPath));
-
 app.use(mainRouter);
 
 const PORT = process.env.PORT || 3000;
