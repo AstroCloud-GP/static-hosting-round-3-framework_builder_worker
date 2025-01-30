@@ -82,6 +82,9 @@ async function buildJob(data: BuildJob): Promise<{
             const filePath = path.join(file.parentPath, file.name)
             const fileBuffer = fs.readFileSync(filePath)
             let fileNameWithDirectory = path.relative(workFolder, filePath)
+            if(fileNameWithDirectory.startsWith('.git')) {
+                continue
+            }
             if(data.project_config.outputDir && fileNameWithDirectory.startsWith(data.project_config.outputDir)) {
                 fileNameWithDirectory = fileNameWithDirectory.slice(data.project_config.outputDir.length+1)
             }

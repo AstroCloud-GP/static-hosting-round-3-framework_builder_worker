@@ -44,14 +44,19 @@ Branch: main
 Repository URL: https://github.com/vanzasetia/designo-multi-page-website
 Branch: main
 
-3. React project
+3. Another Multi-page static project
+
+Repository URL: https://github.com/SayeedaSaima/Full-Responsive-Multi-Page-Website
+Branch: main
+
+4. React project
 
 Repository URL: https://github.com/nightknighto/MyReads-Book-Library
 Branch: master
 Build Command: npm run build
 Output Directory: build
 
-4. Weather React project (note: no API key)
+5. Weather React project (note: no API key)
 
 Repository URL: https://github.com/s-shemmee/React-Weather-App
 Branch: main
