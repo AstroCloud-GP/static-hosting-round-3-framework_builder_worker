@@ -14,10 +14,7 @@ projectRouter.get('/', (req, res) => {
 projectRouter.post('/new', async (req, res) => {
     const data = req.body as ProjectCreateDTO;
 
-    const project = await createProject({
-        ...data,
-        ownerId: 1
-    });
+    const project = await createProject(data);
 
     const build = await createBuild(project.id);
 

@@ -13,5 +13,6 @@ export interface ProjectCreateDTO {
     name: string,
     token: string,
     repository_url: string,
-    config: ProjectConfig
+    config: ProjectConfig,
+    ownerId: number
 }

@@ -55,7 +55,7 @@ enum BuildStatus {
 model Env_vars {
   project Project @relation(fields: [project_id], references: [id])
   project_id Int
-  key String
+  key String  
   value String
 
   @@id([project_id, key])

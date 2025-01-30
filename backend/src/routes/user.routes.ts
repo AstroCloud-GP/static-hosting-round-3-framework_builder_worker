@@ -3,10 +3,6 @@ import { createUser, getUserById } from '../models/User';
 
 const userRouter = Router();
 
-userRouter.get('/', (req, res) => {
-  res.json({ message: 'Hello, world!' });
-});
-
 // Get user by id
 userRouter.get('/:id', async (req, res) => {
   const id = parseInt(req.params.id);
@@ -20,8 +16,8 @@ userRouter.get('/:id', async (req, res) => {
 
 userRouter.post('/', async (req, res) => {
   const { name, email } = req.body;
-  await createUser(name, email);
-  res.json({ message: 'User created' });
+  const user = await createUser(name, email);
+  res.json({ id: user.id });
 });
 
 export default userRouter;
