@@ -81,7 +81,10 @@ async function buildJob(data: BuildJob): Promise<{
         for await (let file of files) {
             const filePath = path.join(file.parentPath, file.name)
             const fileBuffer = fs.readFileSync(filePath)
-            const fileNameWithDirectory = path.relative(workFolder, filePath)
+            let fileNameWithDirectory = path.relative(workFolder, filePath)
+            if(data.project_config.outputDir && fileNameWithDirectory.startsWith(data.project_config.outputDir)) {
+                fileNameWithDirectory = fileNameWithDirectory.slice(data.project_config.outputDir.length+1)
+            }
             console.log(fileNameWithDirectory)
             await AzureService.uploadToContainer(containerName, fileNameWithDirectory, fileBuffer)
         }

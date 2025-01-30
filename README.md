@@ -31,3 +31,29 @@ https://youtu.be/wj-VoOoVZYw
 ![worker](./docs/worker.png)
 
 ![schema](./docs/schema.png)
+
+## Test samples
+
+1. Static project
+
+Repository URL: https://github.com/codingstella/vCard-personal-portfolio
+Branch: main
+
+2. Multi-page static project
+
+Repository URL: https://github.com/vanzasetia/designo-multi-page-website
+Branch: main
+
+3. React project
+
+Repository URL: https://github.com/nightknighto/MyReads-Book-Library
+Branch: master
+Build Command: npm run build
+Output Directory: build
+
+4. Weather React project (note: no API key)
+
+Repository URL: https://github.com/s-shemmee/React-Weather-App
+Branch: main
+Build Command: npm run build
+Output Directory: build

@@ -56,17 +56,35 @@ pre {
 
 .project {
   border: 1px solid #ddd;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 }
 
 .project h3 {
   margin-top: 0;
+  color: #007BFF;
 }
 
 .project p {
   margin: 5px 0;
+  color: #555;
+}
+
+.project a {
+  color: #007BFF;
+  text-decoration: none;
+}
+
+.project a:hover {
+  text-decoration: underline;
 }
 
 .build {
