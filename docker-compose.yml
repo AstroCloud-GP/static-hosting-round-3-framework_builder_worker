@@ -9,7 +9,7 @@ services:
       - REDIS_HOST=queue
       - REDIS_PORT=6379
       - DATABASE_URL=postgres://user:password@database/mydb
-    entrypoint: sh -c 'npx prisma db push && npm run start' 
+    entrypoint: sh -c 'npx prisma db push --accept-data-loss && npm run start' 
     ports:
       - "3000:3000"
     networks:
