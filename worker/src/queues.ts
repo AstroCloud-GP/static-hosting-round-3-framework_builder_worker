@@ -14,3 +14,16 @@ export const buildJobWorker = new Worker<BuildJob>(BUILD_JOB_QUEUE_NAME, buildJo
     },
     maxStalledCount: 0
 })
+
+/**
+ * Initializes the build job worker with error handling
+ */
+export function initJobWorker() {
+    buildJobWorker.on("completed", (job) => {
+        console.log(`Build job ${job.id} completed successfully`);
+    });
+
+    buildJobWorker.on("failed", (job, err) => {
+        console.error(`Build job ${job?.id} failed with error: ${err.message}`);
+    });
+}

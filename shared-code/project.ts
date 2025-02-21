@@ -1,4 +1,6 @@
-
+/**
+ * Configuration options for a project.
+ */
 export interface ProjectConfig {
     branch?: string | null,
     buildCommand?: string | null,
@@ -9,6 +11,9 @@ export interface ProjectConfig {
     } | null
 }
 
+/**
+ * Data required to create a new project.
+ */
 export interface ProjectCreateDTO {
     name: string,
     token: string,

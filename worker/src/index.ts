@@ -1,19 +1,14 @@
 import { execSync } from "child_process";
-import { buildJobWorker } from "./queues";
+import { buildJobWorker, initJobWorker } from "./queues";
 
 /**
  * Main function that initializes the worker service
  */
 async function main() {
-  buildJobWorker.on("completed", (job) => {
-    console.log(`Build job ${job.id} completed successfully`);
-  });
+  // Start the build job worker
+  initJobWorker();
 
-  buildJobWorker.on("failed", (job, err) => {
-    console.error(`Build job ${job?.id} failed with error: ${err.message}`);
-  });
-
-  // Check if Docker is running
+  // Check if Docker is reachable
   try {
     execSync(`docker ps`)
   } catch {
