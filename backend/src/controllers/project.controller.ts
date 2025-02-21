@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ProjectCreateDTO } from '../../../shared-code/project';
 import { createProject, getProjectById, getProjectBuilds } from '../models/Project';
 import { createBuild } from '../models/Build';
-import addBuildJob from '../job-queue';
+import addBuildJob from '../services/job-queue';
 
 export function getProjectHomeController(req: Request, res: Response) {
     res.json({ message: 'Hello, world!' });

@@ -1,5 +1,5 @@
 import { Project, User } from "@prisma/client"
-import { prisma } from "../prisma"
+import { prisma } from "./prisma"
 
 export async function getAllUsers(): Promise<User[]> {
     return await prisma.user.findMany()

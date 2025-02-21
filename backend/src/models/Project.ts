@@ -1,5 +1,5 @@
 import { Build, Project, User } from "@prisma/client";
-import { prisma } from "../prisma";
+import { prisma } from "./prisma";
 import { ProjectConfig, ProjectCreateDTO } from "../../../shared-code/project";
 
 export async function getProjectById(id: number) {

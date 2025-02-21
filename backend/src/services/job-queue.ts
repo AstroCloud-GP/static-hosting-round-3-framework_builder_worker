@@ -1,6 +1,6 @@
 import { Queue } from "bullmq";
-import { BUILD_JOB_QUEUE_NAME, BuildJob } from "../../shared-code/queues";
-import { redisConfig } from "./config";
+import { BUILD_JOB_QUEUE_NAME, BuildJob } from "../../../shared-code/queues";
+import { redisConfig } from "../config";
 
 const jobQueue = new Queue<BuildJob>(BUILD_JOB_QUEUE_NAME, { connection: redisConfig })
 

@@ -1,10 +1,7 @@
 import express from "express";
 import cors from "cors";
-import addBuildJob from "./job-queue";
-import { getAllUsers } from "./models/User";
 import mainRouter from "./routes/routes";
-import { initResultWorker } from "./result-queue";
-import path from "path";
+import { initResultWorker } from "./services/result-queue";
 
 initResultWorker();
 
