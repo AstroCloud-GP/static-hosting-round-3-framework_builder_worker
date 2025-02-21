@@ -3,6 +3,7 @@ import cors from "cors";
 import mainRouter from "./routes/routes";
 import { initResultWorker } from "./services/result-queue";
 
+// initialize the result worker to process build results
 initResultWorker();
 
 const app = express();

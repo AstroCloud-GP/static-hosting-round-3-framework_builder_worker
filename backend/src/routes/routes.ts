@@ -1,5 +1,4 @@
 import { Router } from "express";
-import * as fs from "fs";
 import userRouter from "./user.routes";
 import projectRouter from "./project.routes";
 

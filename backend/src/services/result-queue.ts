@@ -3,11 +3,17 @@ import { BUILD_RESULT_QUEUE_NAME, BuildResult } from "../../../shared-code/queue
 import { updateBuild } from "../models/Build";
 import { redisConfig } from "../config";
 
+/**
+ * Worker instance that processes build results from the queue
+ */
 const buildResultWorker = new Worker<BuildResult>(BUILD_RESULT_QUEUE_NAME, async (job) => {
     console.log(`Build result for project ${job.data.project_id} with build number ${job.data.build_number}: ${job.data.status}`);
     await updateBuild(job.data.project_id, job.data.build_number, job.data.status, job.data.logs);
 }, { connection: redisConfig });
 
+/**
+ * Initializes the build result worker with error handling
+ */
 export function initResultWorker() {
     buildResultWorker.on("completed", (job) => {
         console.log(`Build result job ${job.id} completed successfully`);

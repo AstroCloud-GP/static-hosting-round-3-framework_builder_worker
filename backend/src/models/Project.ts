@@ -2,6 +2,11 @@ import { Build, Project, User } from "@prisma/client";
 import { prisma } from "./prisma";
 import { ProjectConfig, ProjectCreateDTO } from "../../../shared-code/project";
 
+/**
+ * Retrieves a project by its ID, including environment variables
+ * @param id - The ID of the project to retrieve
+ * @returns Promise that resolves to the project with its configuration
+ */
 export async function getProjectById(id: number) {
     return await prisma.project.findUnique({
         where: {
@@ -17,7 +22,11 @@ interface ProjectData extends ProjectCreateDTO {
     ownerId: number
 }
     
-
+/**
+ * Creates a new project in the database
+ * @param projectData - The project creation data including owner and configuration
+ * @returns Promise that resolves to the created project
+ */
 export async function createProject(projectData: ProjectData): Promise<Project> {
     return await prisma.project.create({
         data: {
@@ -42,6 +51,11 @@ export async function createProject(projectData: ProjectData): Promise<Project> 
     })
 }
 
+/**
+ * Retrieves all builds associated with a project
+ * @param projectId - The ID of the project
+ * @returns Promise that resolves to an array of builds or null if project not found
+ */
 export async function getProjectBuilds(projectId: number): Promise<Build[] | null> {
     return await prisma.project.findUnique({
         where: {
