@@ -6,6 +6,10 @@ import { execSync } from "child_process";
 import { AzureService } from "./azure";
 import path from "path";
 
+/**
+ * Processes build jobs from the queue
+ * @param job The build job to process
+ */
 export const buildJobProcessor: Processor<BuildJob> = async (job) => {
     console.log(`Building project ${job.data.project_id} with build number ${job.data.build_number}`);
 
@@ -20,6 +24,11 @@ export const buildJobProcessor: Processor<BuildJob> = async (job) => {
 
 }
 
+/**
+ * Executes the build process for a project
+ * @param data Build job configuration data
+ * @returns Object containing build status and logs
+ */
 async function buildJob(data: BuildJob): Promise<{
     status: "SUCCESS" | "FAIL",
     logs: string,

@@ -3,8 +3,10 @@ import { BUILD_RESULT_QUEUE_NAME, BUILD_JOB_QUEUE_NAME, BuildResult, BuildJob } 
 import { redisConfig } from "./config";
 import { buildJobProcessor } from "./build-job-process";
 
+/** Queue for storing build results after job completion */
 export const buildResultQueue = new Queue<BuildResult>(BUILD_RESULT_QUEUE_NAME, { connection: redisConfig })
 
+/** Worker that processes build jobs from the build job queue */
 export const buildJobWorker = new Worker<BuildJob>(BUILD_JOB_QUEUE_NAME, buildJobProcessor, {
     connection: redisConfig,
     removeOnFail: {

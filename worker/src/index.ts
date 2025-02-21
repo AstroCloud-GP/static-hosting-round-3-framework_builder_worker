@@ -1,6 +1,9 @@
 import { execSync } from "child_process";
 import { buildJobWorker } from "./queues";
 
+/**
+ * Main function that initializes the worker service
+ */
 async function main() {
   buildJobWorker.on("completed", (job) => {
     console.log(`Build job ${job.id} completed successfully`);
