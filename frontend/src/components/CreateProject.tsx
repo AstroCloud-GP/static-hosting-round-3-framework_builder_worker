@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {ProjectCreateDTO} from '../../../shared-code/project'
+import { ProjectCreateDTO } from '../../../shared-code/project'
 
 interface Config {
   branch: string;

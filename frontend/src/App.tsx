@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CreateUser from '../../frontend/src/components/CreateUser';
 import SignIn from '../../frontend/src/components/SignIn';
 import UserProjects, { Project } from '../../frontend/src/components/UserProjects';

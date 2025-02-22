@@ -46,9 +46,9 @@ async function buildJob(data: BuildJob): Promise<{
     status: "SUCCESS" | "FAIL",
     logs: string,
 }> {
-    
+
     const workFolder = path.join(process.cwd(), 'temp', data.project_id + '')
-    
+
     /**
      * Cumulative logs for the entire build process
      */
@@ -77,7 +77,7 @@ async function buildJob(data: BuildJob): Promise<{
         console.log("Git clone logs: ", logs);
         cumLogs += logs;
 
-        if(data.project_config.buildCommand) {
+        if (data.project_config.buildCommand) {
             // if build command is specified, install npm dependencies
             logs = execSync(`docker exec ${data.container_name} sh -c "cd /app && npm install --force"`).toString();
             console.log("Npm install logs: ", logs);
@@ -90,7 +90,7 @@ async function buildJob(data: BuildJob): Promise<{
         cumLogs += logs;
 
         // copy the build output to the mounted volume path
-        logs = execSync(`docker exec ${data.container_name} cp -r ./${data.project_config.outputDir? data.project_config.outputDir + '/' : ''} /output`).toString();
+        logs = execSync(`docker exec ${data.container_name} cp -r ./${data.project_config.outputDir ? data.project_config.outputDir + '/' : ''} /output`).toString();
         console.log("Copy output logs: ", logs);
         cumLogs += logs;
 
@@ -98,8 +98,8 @@ async function buildJob(data: BuildJob): Promise<{
 
         const containerName = data.container_name;
         console.log("Checking if container exists...")
-        
-        if(await AzureService.doesContainerExist(containerName)) {
+
+        if (await AzureService.doesContainerExist(containerName)) {
             // if container exists with the same name, empty it
             console.log("Container already exists. Emptying...")
             await AzureService.emptyContainer(containerName)
@@ -115,7 +115,7 @@ async function buildJob(data: BuildJob): Promise<{
             withFileTypes: true,
             recursive: true
         }).filter(item => item.isFile())
-        
+
         // upload each file to the container with the same directory structure
         for await (let file of files) {
             const filePath = path.join(file.parentPath, file.name)
@@ -125,13 +125,13 @@ async function buildJob(data: BuildJob): Promise<{
             let fileNameWithDirectory = path.relative(workFolder, filePath)
 
             // skip .git directory
-            if(fileNameWithDirectory.startsWith('.git')) {
+            if (fileNameWithDirectory.startsWith('.git')) {
                 continue
             }
 
             // remove outputDir prefix if present
-            if(data.project_config.outputDir && fileNameWithDirectory.startsWith(data.project_config.outputDir)) {
-                fileNameWithDirectory = fileNameWithDirectory.slice(data.project_config.outputDir.length+1)
+            if (data.project_config.outputDir && fileNameWithDirectory.startsWith(data.project_config.outputDir)) {
+                fileNameWithDirectory = fileNameWithDirectory.slice(data.project_config.outputDir.length + 1)
             }
 
             console.log(fileNameWithDirectory)
@@ -159,7 +159,7 @@ async function buildJob(data: BuildJob): Promise<{
             execSync(`docker stop ${data.container_name}`);
         } catch (e) {
             console.error("Error occurred in stopping container: ", e)
-        }           
+        }
 
         // cleanup working directory
         fs.rmdirSync(workFolder, { recursive: true });

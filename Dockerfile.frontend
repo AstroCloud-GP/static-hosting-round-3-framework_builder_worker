@@ -1,0 +1,26 @@
+# Use the official Node.js 22 image as the base image
+FROM node:22.11.0-alpine AS development
+
+# Set the working directory for the shared
+WORKDIR /app/shared-code
+
+# Copy the entire shared directory to the working directory
+COPY ./shared-code .
+
+# Set the working directory for the frontend
+WORKDIR /app/frontend
+
+# Copy frontend package.json and package-lock.json files to the working directory
+COPY ./frontend/package*.json .
+
+# Install dependencies for the frontend workspace
+RUN npm install --force
+
+# Copy the entire frontend directory to the working directory
+COPY ./frontend .
+
+# Expose the port the app runs on
+EXPOSE 5173
+
+# Command to run the application
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
